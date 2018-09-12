@@ -11,15 +11,16 @@ export let System = {
   System_country: 'zh-cn', // 所在国家的国家代码
   System_plugin_path: path.join(__dirname, './plugins'), // 插件路径
   Session_Key: 'RESTfulAPI', // 生产环境务必随机设置一个值
-  db_type: 'mysql' // 数据库类型
+  db_type: 'mongoDB' // 数据库类型
 }
 
 export let DB = {
+  db_type: 'mongodb',
   host: 'localhost', // 服务器地址
-  port: 3306, // 数据库端口号
+  port: 27017, // 数据库端口号
   username: 'admin', // 数据库用户名
   password: 'admin888', // 数据库密码
-  database: 'development', // 数据库名称
+  database: 'datar-report', // 数据库名称
   prefix: 'api_' // 默认"api_"
 }
 

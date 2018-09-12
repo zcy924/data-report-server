@@ -1,21 +1,33 @@
 import Koa2 from 'koa'
 import KoaBody from 'koa-body'
 import KoaStatic from 'koa-static2'
-import {
-  System as SystemConfig
-} from './config'
+import { System as SystemConfig, DB as db } from './config'
 import path from 'path'
-import MainRoutes from './routes/main-routes'
+import UserRoutes from './routes/user.router'
 import ErrorRoutesCatch from './middleware/ErrorRoutesCatch'
 import ErrorRoutes from './routes/error-routes'
 import jwt from 'koa-jwt'
 import fs from 'fs'
+
+const mongoose = require('mongoose')
+// import mongoose from 'mongoose'
+mongoose.Promise = require('bluebird')
+mongoose.connect(
+  'mongodb://localhost:27017/data-report',
+  function (err, db) {
+    if (err) {
+      console.log('connect database fail')
+    } else {
+      console.log('connect database success')
+    }
+  }
+)
 // import PluginLoader from './lib/PluginLoader'
 
 const app = new Koa2()
 const env = process.env.NODE_ENV || 'development' // Current mode
 
-const publicKey = fs.readFileSync(path.join(__dirname, '../publicKey.pub'))
+// const publicKey = fs.readFileSync(path.join(__dirname, '../publicKey.pub'))
 
 app
   .use((ctx, next) => {
@@ -31,23 +43,26 @@ app
   })
   .use(ErrorRoutesCatch())
   .use(KoaStatic('assets', path.resolve(__dirname, '../assets'))) // Static resource
-  .use(jwt({ secret: publicKey }).unless({ path: [/^\/public|\/user\/login|\/assets/] }))
-  .use(KoaBody({
-    multipart: true,
-    strict: false,
-    formidable: {
-      uploadDir: path.join(__dirname, '../assets/uploads/tmp')
-    },
-    jsonLimit: '10mb',
-    formLimit: '10mb',
-    textLimit: '10mb'
-  })) // Processing request
+  // .use(jwt({ secret: publicKey }).unless({ path: [/^\/public|\/user\/login|\/assets/] }))
+  .use(
+    KoaBody({
+      multipart: true,
+      strict: false,
+      formidable: {
+        uploadDir: path.join(__dirname, '../assets/uploads/tmp')
+      },
+      jsonLimit: '10mb',
+      formLimit: '10mb',
+      textLimit: '10mb'
+    })
+  ) // Processing request
   // .use(PluginLoader(SystemConfig.System_plugin_path))
-  .use(MainRoutes.routes())
-  .use(MainRoutes.allowedMethods())
+  .use(UserRoutes.routes())
+  .use(UserRoutes.allowedMethods())
   .use(ErrorRoutes())
 
-if (env === 'development') { // logger
+if (env === 'development') {
+  // logger
   app.use((ctx, next) => {
     const start = new Date()
     return next().then(() => {
