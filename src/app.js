@@ -1,20 +1,18 @@
 import Koa2 from 'koa'
 import KoaBody from 'koa-body'
 import KoaStatic from 'koa-static2'
-import { System as SystemConfig, DB as db } from './config'
+import { System as SystemConfig } from './config'
 import path from 'path'
 import UserRoutes from './routes/user.router'
 import ErrorRoutesCatch from './middleware/ErrorRoutesCatch'
 import ErrorRoutes from './routes/error-routes'
+import mongoose from 'mongoose'
 import jwt from 'koa-jwt'
 import fs from 'fs'
 
-const mongoose = require('mongoose')
-// import mongoose from 'mongoose'
-mongoose.Promise = require('bluebird')
 mongoose.connect(
   'mongodb://localhost:27017/data-report',
-  function (err, db) {
+  function (err) {
     if (err) {
       console.log('connect database fail')
     } else {
@@ -22,6 +20,7 @@ mongoose.connect(
     }
   }
 )
+
 // import PluginLoader from './lib/PluginLoader'
 
 const app = new Koa2()
@@ -67,7 +66,9 @@ if (env === 'development') {
     const start = new Date()
     return next().then(() => {
       const ms = new Date() - start
-      console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+      if (ctx.url !== '/favicon.ico') {
+        console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+      }
     })
   })
 }

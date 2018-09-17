@@ -30,3 +30,6 @@ export let SendEmail = {
   password: 'password', // 邮箱密码
   sender_address: '"XX平台 👥" <postmaster@abcd.com>'
 }
+export let a = (b) => {
+  console.log(b)
+}

@@ -1,8 +1,11 @@
 // var userHelper = require('../dbhelper/userHelper')
-var mongoose = require('mongoose')
-var UserSchema = require('../models/user')
+import mongoose from 'mongoose'
+import {UserSchema} from '../models/user'
+// var mongoose = require('mongoose')
+// var UserSchema = require('../models/user')
 var User = mongoose.model('users', UserSchema)
-exports.getUsers = async (ctx, next) => {
+
+export let getUsers = async (ctx, next) => {
   try {
     let list = await User.find({})
     ctx.body = {
@@ -15,4 +18,8 @@ exports.getUsers = async (ctx, next) => {
       retList: 'error'
     }
   }
+}
+
+export let getUserById = async (ctx, next) => {
+  console.log(ctx)
 }

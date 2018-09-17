@@ -10,4 +10,5 @@ var router = new Router()
 
 router // 以/public开头则不用经过权限认证
   .get('/getUsers', User.getUsers)
-module.exports = router
+  .get('/getUserById/:id', User.getUserById)
+export default router

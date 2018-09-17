@@ -8,7 +8,7 @@ var Schema = mongoose.Schema
  * 除了定义结构外，还定义文档的实例方法，静态模型方法，复合索引，中间件等
  * @type {mongoose}
  */
-var UserSchema = new Schema({
+export let UserSchema = new Schema({
   userName: String,
   age: Number,
   passWord: String
@@ -32,7 +32,7 @@ var UserSchema = new Schema({
 // 参数User 数据库中的集合名称, 不存在会创建.
 // var User = mongoose.model('users', UserSchema)
 
-module.exports = UserSchema
+// module.exports = UserSchema
 
 /**
  * nodejs中文社区这篇帖子对mongoose的用法总结的不错：https://cnodejs.org/topic/548e54d157fd3ae46b233502
