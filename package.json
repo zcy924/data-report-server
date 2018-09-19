@@ -1,5 +1,5 @@
 {
-  "name": "koa2-API-scaffold",
+  "name": "data-report-server",
   "version": "1.0.0",
   "description": "Koa2 RESTful API 服务器的脚手架",
   "author": "轶哥 <a@wyr.me>",
@@ -17,6 +17,7 @@
     "koa-jwt": "^3.2.2",
     "koa-router": "^7.2.1",
     "koa-static2": "^0.1.8",
+    "koa2-cors": "^2.0.6",
     "mongoose": "^5.2.14",
     "nodemailer": "^4.3.0",
     "promise-mysql": "^3.1.1",

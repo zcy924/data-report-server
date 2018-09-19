@@ -3,7 +3,9 @@ import KoaBody from 'koa-body'
 import KoaStatic from 'koa-static2'
 import { System as SystemConfig } from './config'
 import path from 'path'
+import MainRoutes from './routes/main-routes'
 import UserRoutes from './routes/user.router'
+import SpaceRoutes from './routes/space-routers'
 import ErrorRoutesCatch from './middleware/ErrorRoutesCatch'
 import ErrorRoutes from './routes/error-routes'
 import mongoose from 'mongoose'
@@ -11,7 +13,7 @@ import jwt from 'koa-jwt'
 import fs from 'fs'
 
 mongoose.connect(
-  'mongodb://localhost:27017/data-report',
+  'mongodb://localhost:27017/data-report', {useNewUrlParser: true},
   function (err) {
     if (err) {
       console.log('connect database fail')
@@ -27,8 +29,8 @@ const app = new Koa2()
 const env = process.env.NODE_ENV || 'development' // Current mode
 
 // const publicKey = fs.readFileSync(path.join(__dirname, '../publicKey.pub'))
-
 app
+  // .use(cors())
   .use((ctx, next) => {
     if (ctx.request.header.host.split(':')[0] === 'localhost' || ctx.request.header.host.split(':')[0] === '127.0.0.1') {
       ctx.set('Access-Control-Allow-Origin', '*')
@@ -56,22 +58,25 @@ app
     })
   ) // Processing request
   // .use(PluginLoader(SystemConfig.System_plugin_path))
-  .use(UserRoutes.routes())
-  .use(UserRoutes.allowedMethods())
-  .use(ErrorRoutes())
-
 if (env === 'development') {
   // logger
-  app.use((ctx, next) => {
+  app.use(async (ctx, next) => {
     const start = new Date()
-    return next().then(() => {
-      const ms = new Date() - start
-      if (ctx.url !== '/favicon.ico') {
-        console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
-      }
-    })
+    await next()
+    const ms = new Date() - start
+    if (ctx.url !== '/favicon.ico') {
+      console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+    }
   })
 }
+app
+  .use(MainRoutes.routes())
+  .use(MainRoutes.allowedMethods())
+  .use(UserRoutes.routes())
+  .use(UserRoutes.allowedMethods())
+  .use(SpaceRoutes.routes())
+  .use(SpaceRoutes.allowedMethods())
+  .use(ErrorRoutes())
 
 app.listen(SystemConfig.API_server_port)
 
